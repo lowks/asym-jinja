@@ -52,7 +52,6 @@ from django.forms.util import flatatt
 import django.forms
 import jinja2
 
-
 register = template.Library()
 
 class _RadioInput(django.forms.widgets.RadioInput):
@@ -76,8 +75,6 @@ class _RadioInput(django.forms.widgets.RadioInput):
 	def render(self):
 		"""Outputs the <input> for this radio field"""
 		return mark_safe(u'%s' % force_text(self.tag()))
-
-
 
 class _PseudoBoundField(object):
 	"""An object from which to render one checkbox or radio button.
@@ -144,8 +141,6 @@ class _PseudoRadioBoundField(_PseudoBoundField):
 		radio = _RadioInput(self.parent_name, self.value, self.attrs, choice,
 													self.radio_id, self.checked)
 		return radio.render()
-
-
 
 class _ValueGrabber(object):
 	"""A pseudo widget to capture information from the MultiSelect object.

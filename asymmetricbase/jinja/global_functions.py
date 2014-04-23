@@ -19,12 +19,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from functools import partial
 
-from collections import OrderedDict
-
 from django.utils import timezone
 from django.core.urlresolvers import reverse
-
-from jinja2.utils import contextfunction
 
 def jinja_url(view_name, *args, **kwargs):
 	return reverse(view_name, args = args, kwargs = kwargs)
@@ -49,57 +45,6 @@ def jinja_getattr(env, obj, attr_string):
 		obj = env.getattr(obj, attr)
 	return obj
 
-
-@contextfunction
-def jinja_context_getattr(context, attr_string):
-	"""
-	Tries to get attribute by name from context
-	"""
-	return jinja_getattr(context.environment, context, attr_string)
-
-@contextfunction
-def jinja_batch_context_getattr(context, *args, **kwargs):
-	new_args = []
-	new_kwargs = {}
-	if args:
-		for arg in args:
-			new_args.append(jinja_context_getattr(context, arg))
-		return new_args
-	if kwargs:
-		for k, v in kwargs.items():
-			new_kwargs[k] = jinja_context_getattr(context, v)
-		return new_kwargs
-
-@contextfunction
-def jinja_resolve_contextattributes(context, __obj, **kwargs):
-	from asymmetricbase.displaymanager import ContextAttribute
-	
-	if isinstance(__obj, ContextAttribute):
-		return __obj(context, **kwargs)
-	
-	elif isinstance(__obj, (list, tuple)):
-		return (jinja_resolve_contextattributes(context, item, **kwargs) for item in __obj)
-	
-	elif isinstance(__obj, (set, frozenset)):
-		return { jinja_resolve_contextattributes(context, item, **kwargs) for item in __obj }
-	
-	elif isinstance(__obj, (dict, OrderedDict)):
-		return { k : jinja_resolve_contextattributes(context, item, **kwargs) for k, item in __obj.items() }
-	
-	return __obj
-
-@contextfunction
-def jinja_vtable(ctx, table, header = '', tail = '', title = ''):
-	return ctx.environment.get_template_module('asymmetricbase/displaymanager/base.djhtml', ctx).vtable(table, header, tail, title)
-
-@contextfunction
-def jinja_gridlayout(ctx, layout):
-	return ctx.environment.get_template_module('asymmetricbase/displaymanager/base.djhtml', ctx).gridlayout(layout)
-
-@contextfunction
-def jinja_display(ctx, layout):
-	return ctx.environment.get_template_module('asymmetricbase/displaymanager/base.djhtml', ctx).display(layout)
-
 def get_functions(jinja_env):
 	return {
 		'url' : jinja_url,
@@ -107,12 +52,4 @@ def get_functions(jinja_env):
 		'type' : type,
 		'dir' : dir,
 		'getattr' : partial(jinja_getattr, jinja_env),
-		'context_getattr' : jinja_context_getattr,
-		'batch_context_getattr' : jinja_batch_context_getattr,
-		
-		'resolve_contextattributes' : jinja_resolve_contextattributes,
-		
-		'vtable' : jinja_vtable,
-		'gridlayout' : jinja_gridlayout,
-		'display' : jinja_display,
 	}
