@@ -26,7 +26,7 @@ from jinja2.ext import WithExtension, LoopControlExtension
 from .tags.csrf_token import CSRFTokenExtension
 from . import filters, global_functions, environment
 
-def get_jinja_env(self):
+def get_jinja_env():
 	from django.template.loaders.app_directories import	app_template_dirs
 	template_loader = getattr(settings, 'ASYM_TEMPLATE_LOADER', jinja2.FileSystemLoader(app_template_dirs))
 	
