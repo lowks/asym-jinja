@@ -16,15 +16,16 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-import django
 
+import django
 from django.conf import settings
 from django.utils.functional import lazy, SimpleLazyObject
 import jinja2
 from jinja2.ext import WithExtension, LoopControlExtension
 
-from .tags.csrf_token import CSRFTokenExtension
 from . import filters, global_functions, environment
+from .tags.csrf_token import CSRFTokenExtension
+
 
 def get_jinja_env():
 	from django.template.loaders.app_directories import	app_template_dirs
@@ -55,4 +56,4 @@ default_app_config = 'asymmetricbase.jinja.app_config.JinjaAppConfig'
 
 if django.get_version() < '1.7':
 	from .app_config import JinjaAppConfig
-	JinjaAppConfig.ready()
+	JinjaAppConfig().ready()
