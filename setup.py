@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja2 utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,11 +31,11 @@ License :: OSI Approved :: GNU General Public License v2 (GPLv2)
 Topic :: Software Development :: Libraries :: Application Frameworks
 """
 
-version = '0.1.2'
+version = '0.2.0'
 url = 'https://github.com/AsymmetricVentures/asym-jinja'
 
 setup(
-	name = 'asymmetricbase.jinja',
+	name = 'asymm-jinja',
 	version = '{}-{}'.format(version, datetime.now().strftime('%Y%m%d%H%M')),
 	url = url,
 	download_url = '{}/archive/v{}.tar.gz'.format(url, version),
@@ -43,17 +43,12 @@ setup(
 	author_email = 'reames@asymmetricventures.com',
 	packages = find_packages(),
 	classifiers = list(filter(None, classifiers.split('\n'))),
-	namespace_packages = ['asymmetricbase'],
 	
 	install_requires = (
 		'django>=1.4.5',
 		'jinja2>=2.7',
 		'pytz',  # most recent
-		'hamlpy',  # most recent,
 	),
 	
-	package_dir = {
-		'asymmetricbase' : 	'asymmetricbase',
-	},
-	package_data = {'' : ['*.djhtml']}
+	test_suite = 'run_tests.main'
 )
