@@ -3,4 +3,6 @@
 .project
 dist
 __pycache__
-asymmetricbase.jinja.egg-info
+*.egg-info
+*.pyc
+*~
