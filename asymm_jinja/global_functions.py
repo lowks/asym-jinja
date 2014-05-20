@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from django.core.urlresolvers import reverse
+from django.utils import timezone
 from functools import partial
 
-from django.utils import timezone
-from django.core.urlresolvers import reverse
 
 def jinja_url(view_name, *args, **kwargs):
 	return reverse(view_name, args = args, kwargs = kwargs)

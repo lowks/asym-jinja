@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-import warnings
 
 from django.conf import settings
 from django.template.context import RequestContext, Context
-
 import jinja2
+import warnings
 
 class UndefinedVar(jinja2.Undefined):
 	def __int__(self):
@@ -43,7 +42,7 @@ class UndefinedVar(jinja2.Undefined):
 		return EmptyIter()
 		
 	def __html__(self):
-		return u'%NONE%'
+		return '%NONE%'
 	
 	def __getattribute__(self, name, *args, **kwargs):
 			

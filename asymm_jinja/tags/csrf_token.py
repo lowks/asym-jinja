@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,23 +17,19 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-def patch_conditional_escape():
-	from django.utils import html as django_html_utils
-	
-	from markupsafe import Markup
-	
-	old_conditional_escape = django_html_utils.conditional_escape
-	def conditional_escape(html):
-		"""
-		Override django's conditional_escape to look for jinja's MarkupSafe
-		"""
-		if isinstance(html, Markup):
-			return html
-		else:
-			return old_conditional_escape(html)
-		
-	setattr(django_html_utils, 'conditional_escape', conditional_escape)
+from jinja2 import nodes
+from jinja2.ext import Extension
 
-def monkey_patch_jinja():
+class CSRFTokenExtension(Extension):
+	tags = set(['csrf_token'])
 	
-	patch_conditional_escape()
+	def parse(self, parser):
+		lineno = parser.stream.next().lineno
+		
+		return [
+			nodes.Output([
+				nodes.TemplateData('<input type="hidden" name="csrfmiddlewaretoken" value="'),
+				nodes.Name('csrf_token', 'load'),
+				nodes.TemplateData('" />'),
+			]).set_lineno(lineno)
+		]

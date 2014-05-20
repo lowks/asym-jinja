@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,25 +17,9 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from django.template.response import TemplateResponse
-from django.template.context import RequestContext
+import django
 
-from . import jinja_env
+default_app_config = 'asymm_jinja.app_config.JinjaAppConfig'
 
-class JinjaTemplateResponse(TemplateResponse):
-	
-	def resolve_template(self, template):
-		if isinstance(template, (list, tuple)):
-			return jinja_env.select_template(template)
-		elif isinstance(template, basestring):
-			return jinja_env.get_template(template)
-		else:
-			return template
-	
-	def resolve_context(self, context):
-		context = super(JinjaTemplateResponse, self).resolve_context(context)
-		
-		if isinstance(context, RequestContext):
-			context = jinja_env.context_to_dict(context)
-			
-		return context
+if django.get_version() < '1.7':
+	from . import app_config

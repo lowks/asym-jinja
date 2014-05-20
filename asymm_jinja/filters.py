@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja2 utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import calendar, locale
 from decimal import Decimal
-
-from django.utils import timezone
 from django.template.defaultfilters import floatformat, yesno, urlencode
+from django.utils import timezone
+import six
 
-from .tags.fielditerator import checkboxiterator, checkboxiterator_named, radioiterator, radioiterator_named
+number_types = six.integer_types + (Decimal, float)
 
 def jinja_date_filter(d, fmt = "%d/%b/%y %I:%M%p"):
 	if not d:
@@ -43,12 +43,12 @@ def jinja_filter_empty(seq):
 	return seq
 
 def currency_format(num):
-	if not isinstance(num, (int, float, long, Decimal)):
+	if not isinstance(num, number_types):
 		num = 0
 	return locale.currency(num, grouping = True)
 
 def percent_format(num):
-	if not isinstance(num, (int, float, long, Decimal)):
+	if not isinstance(num, number_types):
 		num = 0
 	st = "{0:.5f}".format(num * 100).rstrip('0')
 	parts = st.split('.')
@@ -69,12 +69,6 @@ def get_filters(jinja_env):
 		
 		# simple string.format() because django/jinja is missing it
 		'fmt' : jinja_fmt,
-		
-		# For displaying a list of checkboxes
-		'checkboxiterator' : checkboxiterator,
-		'checkboxiterator_named' : checkboxiterator_named,
-		'radioiterator' : radioiterator,
-		'radioiterator_named' : radioiterator_named,
 		
 		# Locale dependant
 		'currency' : currency_format,

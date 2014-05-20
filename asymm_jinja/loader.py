@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#    Asymmetric Base Framework - A collection of utilities for django frameworks
-#    Copyright (C) 2013  Asymmetric Ventures Inc.
+#    Asymmetric Base Framework :: Jinja utils
+#    Copyright (C) 2013-2014 Asymmetric Ventures Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,19 +17,26 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from jinja2 import nodes
-from jinja2.ext import Extension
+from django.template import TemplateDoesNotExist
+from django.template.loaders import filesystem
 
-class CSRFTokenExtension(Extension):
-	tags = set(['csrf_token'])
+import jinja2
+
+class JinjaLoader(filesystem.Loader):
+	is_usable = True
 	
-	def parse(self, parser):
-		lineno = parser.stream.next().lineno
-		
-		return [
-			nodes.Output([
-				nodes.TemplateData('<input type="hidden" name="csrfmiddlewaretoken" value="'),
-				nodes.Name('csrf_token', 'load'),
-				nodes.TemplateData('" />'),
-			]).set_lineno(lineno)
-		]
+	def __init__(self, *args, **kwargs):
+		super(JinjaLoader, self).__init__(*args, **kwargs)
+		try:
+			from django.apps import apps
+			self._env = apps.get_app_config('asymm-jinja').get_env()
+		except ImportError:
+			from .app_config import jinja_app
+			self._env = jinja_app.get_env()
+	
+	def load_template(self, template_name, template_dirs = None):
+		try:
+			template = self._env.get_template(template_name)
+			return template, template.filename
+		except jinja2.TemplateNotFound:
+			raise TemplateDoesNotExist(template_name)
