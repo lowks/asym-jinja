@@ -20,16 +20,15 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from jinja2 import nodes
 from jinja2.ext import Extension
 
+
 class CSRFTokenExtension(Extension):
-	tags = set(['csrf_token'])
-	
-	def parse(self, parser):
-		lineno = parser.stream.next().lineno
-		
-		return [
-			nodes.Output([
-				nodes.TemplateData('<input type="hidden" name="csrfmiddlewaretoken" value="'),
-				nodes.Name('csrf_token', 'load'),
-				nodes.TemplateData('" />'),
-			]).set_lineno(lineno)
-		]
+        tags = set(['csrf_token'])
+
+        def parse(self, parser):
+                lineno = parser.stream.next().lineno
+
+                return [nodes.Output(
+                        [nodes.TemplateData('<input type="hidden" name="csrfmiddlewaretoken" value="'),
+                         nodes.Name('csrf_token', 'load'),
+                         nodes.TemplateData('" />'),
+                         ]).set_lineno(lineno)]
